@@ -62,9 +62,9 @@
 
             <div class="card p-5 bg-gray-800 mb-4 text-white">
                  <ul class="text-[11px] space-y-2 text-gray-300">
-                    <li><i class="fas fa-check-circle text-green-500 mr-1"></i> ১৫০০ টাকা হলেই উইথড্র দেওয়া যাবে।</li>
+                    <li><i class="fas fa-check-circle text-green-500 mr-1"></i> ১৫০০ টাকা হলেই উইথড্র দেওয়া যাবে।</li>
                     <li><i class="fas fa-lock text-yellow-500 mr-1"></i> কমপক্ষে ১৬টি রেফার থাকতে হবে।</li>
-                    <li><i class="fas fa-gift text-purple-500 mr-1"></i> প্রতি সফল রেফারে পাবেন ১০ টাকা।</li>
+                    <li><i class="fas fa-check-circle text-green-500 mr-1"></i> Telegram ও YouTube সাবস্ক্রাইব মাস্ট।</li>
                 </ul>
             </div>
 
@@ -73,28 +73,27 @@
 
         <div id="earn-section" class="tab-content hidden">
             <h2 class="text-lg font-bold mb-4 px-2 uppercase text-xs tracking-widest text-gray-400">Task Center</h2>
-            
-            <div class="card p-4 flex items-center justify-between premium-card mb-4 shadow-sm">
+            <div class="card p-4 flex items-center justify-between premium-card mb-4 shadow-sm border border-yellow-100">
                 <div class="flex items-center">
                     <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 text-white rounded-xl flex items-center justify-center mr-3 shadow-md">
                         <i class="fas fa-gem text-lg"></i>
                     </div>
                     <div>
                         <h4 class="font-bold text-sm text-gray-800">Premium Task</h4>
-                        <p class="text-[10px] text-yellow-600 font-bold uppercase italic tracking-tighter">High Earning Available</p>
+                        <p class="text-[10px] text-yellow-600 font-bold uppercase tracking-tight italic">High Earning Available</p>
                     </div>
                 </div>
-                <button onclick="alert('Premium tasks will be available soon!')" class="bg-yellow-500 text-white px-4 py-2 rounded-lg text-xs font-bold active:scale-90">OPEN</button>
+                <button onclick="alert('Premium tasks will be available soon!')" class="bg-yellow-500 text-white px-4 py-2 rounded-lg text-xs font-bold active:scale-90 shadow-sm">OPEN</button>
             </div>
 
             <div class="card p-4 flex items-center justify-between border-l-4 border-blue-500 mb-4 bg-blue-50">
                 <div class="flex items-center">
-                    <div class="w-10 h-10 bg-blue-500 text-white rounded-xl flex items-center justify-center mr-3">
+                    <div class="w-10 h-10 bg-blue-500 text-white rounded-xl flex items-center justify-center mr-3 shadow-md">
                         <i class="fab fa-telegram-plane text-lg"></i>
                     </div>
                     <div>
                         <h4 class="font-bold text-sm text-gray-800">Telegram Channel</h4>
-                        <p class="text-[10px] text-blue-600 font-bold uppercase">পেমেন্ট আপডেট পেতে জয়েন করুন</p>
+                        <p class="text-[10px] text-blue-600 font-bold uppercase tracking-tight italic">পেমেন্ট আপডেট পেতে জয়েন করুন</p>
                     </div>
                 </div>
                 <a href="https://t.me/REFLAX_1" target="_blank" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold active:scale-90 shadow-sm">JOIN</a>
@@ -102,12 +101,12 @@
 
             <div class="card p-4 flex items-center justify-between border-l-4 border-red-500 mb-4 bg-red-50">
                 <div class="flex items-center">
-                    <div class="w-10 h-10 bg-red-600 text-white rounded-xl flex items-center justify-center mr-3">
+                    <div class="w-10 h-10 bg-red-600 text-white rounded-xl flex items-center justify-center mr-3 shadow-md">
                         <i class="fab fa-youtube text-lg"></i>
                     </div>
                     <div>
                         <h4 class="font-bold text-sm text-gray-800">YouTube Channel</h4>
-                        <p class="text-[10px] text-red-600 font-bold uppercase">সাবস্ক্রাইব করে স্ক্রিনশট রাখুন</p>
+                        <p class="text-[10px] text-red-600 font-bold uppercase tracking-tight italic">সাবস্ক্রাইব করে স্ক্রিনশট রাখুন</p>
                     </div>
                 </div>
                 <a href="https://www.youtube.com/@REFLAX-2" target="_blank" class="bg-red-600 text-white px-4 py-2 rounded-lg text-xs font-bold active:scale-90 shadow-sm">SUBSCRIBE</a>
@@ -120,11 +119,10 @@
                     </div>
                     <div>
                         <h4 class="font-bold text-sm">Reward Video Ad</h4>
-                        <p class="text-[10px] text-gray-400 font-bold">Reward: ৳ 5.00</p>
-                        <p id="ad-limit-text" class="text-[9px] text-purple-600 font-bold">Daily: 0/30</p>
+                        <p class="text-[10px] text-gray-400 font-bold">Reward: ৳ 15.00</p>
                     </div>
                 </div>
-                <button id="adBtn" onclick="showAd()" class="bg-black text-white px-5 py-2 rounded-lg text-xs font-bold active:scale-90 transition min-w-[80px]">Watch</button>
+                <button id="adBtn" onclick="showAd()" class="bg-black text-white px-5 py-2 rounded-lg text-xs font-bold active:scale-90 transition">Watch</button>
             </div>
         </div>
 
@@ -135,7 +133,7 @@
                 <p class="mt-2 text-purple-600 font-bold text-xs"><span id="lock-ref-count">0</span>/16 Refer Complete</p>
             </div>
 
-            <div id="withdraw-form" class="card p-5 space-y-4 opacity-30 pointer-events-none">
+            <div id="withdraw-form" class="card p-5 space-y-4 opacity-30 pointer-events-none transition-all">
                 <h3 class="font-black text-gray-800 text-xs uppercase mb-2">Payment Method</h3>
                 <div class="grid grid-cols-3 gap-2">
                     <div onclick="selectMethod('Bkash')" class="method-card p-2 rounded-xl text-center" id="m-Bkash">
@@ -159,13 +157,18 @@
 
         <div id="profile-section" class="tab-content hidden">
             <div class="card p-6 text-center mb-4 bg-white shadow-md border-t-4 border-purple-600">
-                <h3 class="font-bold text-gray-800" id="display-user-id">ID: 0000</h3>
+                <h3 class="font-bold text-gray-800" id="display-user-id">RF0000</h3>
+                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Referral ID</p>
                 <div class="flex items-center bg-gray-50 border border-gray-100 p-2 rounded-2xl mt-4">
                     <input type="text" id="refer-link" readonly value="Generating..." class="flex-1 bg-transparent p-1 text-[11px] font-bold text-purple-700 outline-none">
                     <button onclick="copyRefer()" class="bg-purple-600 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold">COPY</button>
                 </div>
             </div>
-            <div id="history-container" class="space-y-3 pb-5"></div>
+
+            <h3 class="font-bold text-xs text-gray-400 uppercase mb-3 px-2">Withdraw History</h3>
+            <div id="history-container" class="space-y-3 pb-5">
+                <p class="text-center text-gray-400 text-xs py-5">No history found</p>
+            </div>
         </div>
     </main>
 
@@ -185,6 +188,7 @@
     </nav>
 
     <script>
+        // ১. টেলিগ্রাম সেটআপ
         const tele = window.Telegram.WebApp;
         tele.expand();
 
@@ -201,32 +205,45 @@
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
 
+        // ২. ইউজার আইডি হ্যান্ডলিং
         let userId = tele.initDataUnsafe?.user?.id?.toString() || localStorage.getItem('reflax_id') || ('RF' + Math.floor(1000 + Math.random() * 9999));
         localStorage.setItem('reflax_id', userId);
 
-        let userData = { balance: 0, ads: 0, refers: 0, dailyAds: 0, lastAdDate: "" };
+        let userData = { balance: 0, ads: 0, refers: 0 };
+        let selectedPayment = "";
 
         window.onload = function() {
             document.getElementById('display-user-id').innerText = "ID: " + userId;
-            document.getElementById('refer-link').value = "https://t.me/REFLAX1BOT?start=" + userId;
+            
+            // ৩. স্মার্ট রেফার লিঙ্ক
+            let botUsername = "REFLAX1BOT"; 
+            document.getElementById('refer-link').value = "https://t.me/" + botUsername + "?start=" + userId;
+            
+            // ডাটা লোড করার আগে রেফার চেক
             checkReferral(); 
             loadFirebaseData();
             loadHistory();
         };
 
+        // ৪. রেফারেল কাউন্ট করার ফিক্সড ফাংশন
         function checkReferral() {
+            // টেলিগ্রাম বটের 'start' প্যারামিটার থেকে রেফারার আইডি নেওয়া
             const refBy = tele.initDataUnsafe?.start_param;
-            if (refBy && refBy !== userId && !localStorage.getItem('refer_done')) {
-                db.ref('users/' + userId).once('value', (snap) => {
-                    if (!snap.exists()) {
-                        db.ref('users/' + refBy).transaction((user) => {
-                            if (user) {
-                                user.refers = (user.refers || 0) + 1;
-                                user.balance = (user.balance || 0) + 10; 
-                            }
-                            return user;
+            
+            // যদি রেফারেল আইডি থাকে এবং এটি নিজের না হয় এবং আগে কখনো রেফার না হয়ে থাকে
+            if (refBy && refBy !== userId && !localStorage.getItem('is_referred_already')) {
+                
+                // প্রথমে চেক করা ইউজারটি ডাটাবেজে নতুন কি না
+                db.ref('users/' + userId).once('value', (snapshot) => {
+                    if (!snapshot.exists()) {
+                        // ইউজার নতুন হলে রেফারারকে ১টি রেফার যোগ করে দেওয়া
+                        db.ref('users/' + refBy + '/refers').transaction((current) => {
+                            return (current || 0) + 1;
+                        }).then(() => {
+                            // সফল হলে লোকাল স্টোরেজে মার্ক করা যাতে বারবার কাউন্ট না হয়
+                            localStorage.setItem('is_referred_already', 'true');
+                            console.log("Refer counted for: " + refBy);
                         });
-                        localStorage.setItem('refer_done', 'true');
                     }
                 });
             }
@@ -234,16 +251,9 @@
 
         function loadFirebaseData() {
             db.ref('users/' + userId).on('value', (snap) => {
-                const today = new Date().toLocaleDateString();
                 if(snap.exists()) {
                     userData = snap.val();
-                    if(userData.lastAdDate !== today) {
-                        userData.dailyAds = 0;
-                        db.ref('users/' + userId + '/dailyAds').set(0);
-                        db.ref('users/' + userId + '/lastAdDate').set(today);
-                    }
                 } else {
-                    userData.lastAdDate = today;
                     db.ref('users/' + userId).set(userData);
                 }
                 updateUI();
@@ -251,11 +261,10 @@
         }
 
         function updateUI() {
-            document.getElementById('balance-home').innerText = (userData.balance || 0).toFixed(2);
+            document.getElementById('balance-home').innerText = (Number(userData.balance) || 0).toFixed(2);
             document.getElementById('ads-count-home').innerText = userData.ads || 0;
             document.getElementById('refer-count-home').innerText = userData.refers || 0;
             document.getElementById('lock-ref-count').innerText = userData.refers || 0;
-            document.getElementById('ad-limit-text').innerText = "Daily: " + (userData.dailyAds || 0) + "/30";
 
             let progress = (userData.balance / 1500) * 100;
             document.getElementById('progress-bar').style.width = Math.min(progress, 100) + '%';
@@ -264,47 +273,35 @@
             if(userData.refers >= 16) {
                 document.getElementById('withdraw-lock-msg').classList.add('hidden');
                 document.getElementById('withdraw-form').classList.remove('opacity-30', 'pointer-events-none');
+            } else {
+                document.getElementById('withdraw-lock-msg').classList.remove('hidden');
+                document.getElementById('withdraw-form').classList.add('opacity-30', 'pointer-events-none');
             }
         }
 
         function showAd() {
-            if((userData.dailyAds || 0) >= 30) return alert("আজকের লিমিট শেষ!");
-            
             const btn = document.getElementById('adBtn');
-            btn.disabled = true;
-
             if (typeof show_10611708 === 'function') {
-                show_10611708().then(() => { startTimer(); }).catch(() => { startTimer(); });
+                btn.disabled = true; btn.innerText = "Loading...";
+                show_10611708().then(() => {
+                    addTaka(); btn.disabled = false; btn.innerText = "Watch";
+                }).catch(() => {
+                    setTimeout(addTaka, 2000); 
+                    btn.disabled = false; btn.innerText = "Watch";
+                });
             } else {
-                startTimer();
+                alert("অ্যাড সার্ভিস লোড হয়নি।");
             }
         }
 
-        function startTimer() {
-            const btn = document.getElementById('adBtn');
-            let timeLeft = 10;
-            btn.innerText = timeLeft + "s";
-            
-            const timer = setInterval(() => {
-                timeLeft--;
-                btn.innerText = timeLeft + "s";
-                if(timeLeft <= 0) {
-                    clearInterval(timer);
-                    addTaka();
-                    btn.disabled = false;
-                    btn.innerText = "Watch";
-                }
-            }, 1000);
-        }
-
         function addTaka() {
-            db.ref('users/' + userId).transaction((user) => {
-                if (user) {
-                    user.balance = (Number(user.balance) || 0) + 5;
-                    user.ads = (user.ads || 0) + 1;
-                    user.dailyAds = (user.dailyAds || 0) + 1;
-                }
-                return user;
+            db.ref('users/' + userId).transaction((current) => {
+                if (!current) return { balance: 15, ads: 1, refers: 0 };
+                return {
+                    ...current,
+                    balance: (Number(current.balance) || 0) + 15,
+                    ads: (Number(current.ads) || 0) + 1
+                };
             });
         }
 
@@ -316,7 +313,6 @@
             document.getElementById(tabId + '-nav').classList.remove('text-gray-400');
         }
 
-        let selectedPayment = "";
         function selectMethod(m) {
             selectedPayment = m;
             document.querySelectorAll('.method-card').forEach(el => el.classList.remove('selected'));
@@ -326,14 +322,14 @@
         function processWithdraw() {
             const amt = Number(document.getElementById('w-amount').value);
             const num = document.getElementById('w-number').value;
-            if(!selectedPayment) return alert("পেমেন্ট মেথড সিলেক্ট করুন");
-            if(amt < 1500 || userData.balance < amt) return alert("অ্যামাউন্ট ভুল! (Min 1500)");
+            if(!selectedPayment || !num || amt < 1500) return alert("মিনিমাম ১৫০০ টাকা উইথড্র করুন!");
+            if(userData.balance < amt) return alert("পর্যাপ্ত ব্যালেন্স নেই!");
             
             db.ref('withdrawals').push({
                 userId, method: selectedPayment, number: num, amount: amt, status: 'Pending', date: new Date().toLocaleDateString()
             }).then(() => {
                 db.ref('users/' + userId + '/balance').set(userData.balance - amt);
-                alert("উইথড্র রিকোয়েস্ট সফল!");
+                alert("রিকোয়েস্ট সফল হয়েছে!");
             });
         }
 
@@ -341,22 +337,33 @@
             db.ref('withdrawals').on('value', (snap) => {
                 const container = document.getElementById('history-container');
                 container.innerHTML = "";
+                let count = 0;
                 snap.forEach((child) => {
                     const data = child.val();
                     if(data.userId === userId) {
-                        container.innerHTML += `<div class="card p-4 flex justify-between items-center mb-2">
-                            <div><h4 class="font-bold text-sm">${data.method} - ৳${data.amount}</h4><p class="text-[10px] text-gray-400">${data.date}</p></div>
-                            <span class="px-3 py-1 rounded-full text-[9px] font-black uppercase ${data.status === 'Paid' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'}">${data.status}</span>
-                        </div>`;
+                        count++;
+                        const statusColor = data.status === 'Paid' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600';
+                        container.innerHTML += `
+                            <div class="card p-4 flex justify-between items-center border-l-4 ${data.status === 'Paid' ? 'border-green-500' : 'border-orange-500'}">
+                                <div>
+                                    <h4 class="font-bold text-sm text-gray-800">${data.method} - ৳${data.amount}</h4>
+                                    <p class="text-[10px] text-purple-600 font-bold">To: ${data.number}</p>
+                                    <p class="text-[9px] text-gray-400">${data.date}</p>
+                                </div>
+                                <span class="px-3 py-1 rounded-full text-[9px] font-black uppercase ${statusColor}">${data.status}</span>
+                            </div>`;
                     }
                 });
+                if(count === 0) container.innerHTML = '<p class="text-center text-gray-400 text-xs py-5">No history found</p>';
             });
         }
 
         function copyRefer() {
             const copyText = document.getElementById("refer-link");
+            copyText.select();
             navigator.clipboard.writeText(copyText.value);
-            alert("Refer Link Copied!");
+            if(tele.showAlert) tele.showAlert("Refer Link Copied!");
+            else alert("Copied!");
         }
     </script>
 </body>
