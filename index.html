@@ -56,13 +56,13 @@
                 </div>
                 <div class="card p-4 text-center border-b-4 border-b-pink-500">
                     <p class="text-[10px] text-gray-400 font-bold uppercase">Ads Watched</p>
-                    <p class="font-bold text-lg text-pink-600" id="ads-count-home">0</p>
+                    <p class="font-bold text-lg text-pink-600"><span id="ads-count-home">0</span>/30</p>
                 </div>
             </div>
 
             <div class="card p-5 bg-gray-800 mb-4 text-white">
                  <ul class="text-[11px] space-y-2 text-gray-300">
-                    <li><i class="fas fa-check-circle text-green-500 mr-1"></i> ১৫০০ টাকা হলেই উইথড্র দেওয়া যাবে।</li>
+                    <li><i class="fas fa-check-circle text-green-500 mr-1"></i> ১৫০০ টাকা হলেই উইথড্র দেওয়া যাবে।</li>
                     <li><i class="fas fa-lock text-yellow-500 mr-1"></i> কমপক্ষে ১৬টি রেফার থাকতে হবে।</li>
                     <li><i class="fas fa-check-circle text-green-500 mr-1"></i> Telegram ও YouTube সাবস্ক্রাইব মাস্ট।</li>
                 </ul>
@@ -93,7 +93,7 @@
                     </div>
                     <div>
                         <h4 class="font-bold text-sm text-gray-800">Telegram Channel</h4>
-                        <p class="text-[10px] text-blue-600 font-bold uppercase tracking-tight italic">পেমেন্ট আপডেট পেতে জয়েন করুন</p>
+                        <p class="text-[10px] text-blue-600 font-bold uppercase tracking-tight italic">পেমেন্ট আপডেট পেতে জয়েন করুন</p>
                     </div>
                 </div>
                 <a href="https://t.me/REFLAX_1" target="_blank" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold active:scale-90 shadow-sm">JOIN</a>
@@ -119,7 +119,7 @@
                     </div>
                     <div>
                         <h4 class="font-bold text-sm">Reward Video Ad</h4>
-                        <p class="text-[10px] text-gray-400 font-bold">Reward: ৳ 15.00</p>
+                        <p class="text-[10px] text-gray-400 font-bold">Reward: ৳ 5.00</p>
                     </div>
                 </div>
                 <button id="adBtn" onclick="showAd()" class="bg-black text-white px-5 py-2 rounded-lg text-xs font-bold active:scale-90 transition">Watch</button>
@@ -188,7 +188,6 @@
     </nav>
 
     <script>
-        // ১. টেলিগ্রাম সেটআপ
         const tele = window.Telegram.WebApp;
         tele.expand();
 
@@ -205,46 +204,42 @@
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
 
-        // ২. ইউজার আইডি হ্যান্ডলিং
         let userId = tele.initDataUnsafe?.user?.id?.toString() || localStorage.getItem('reflax_id') || ('RF' + Math.floor(1000 + Math.random() * 9999));
         localStorage.setItem('reflax_id', userId);
 
-        let userData = { balance: 0, ads: 0, refers: 0 };
+        // Updated initial state with lastAdDate to track daily limits
+        let userData = { balance: 0, ads: 0, refers: 0, lastAdDate: "" };
         let selectedPayment = "";
 
         window.onload = function() {
             document.getElementById('display-user-id').innerText = "ID: " + userId;
-            
-            // ৩. স্মার্ট রেফার লিঙ্ক
             let botUsername = "REFLAX1BOT"; 
             document.getElementById('refer-link').value = "https://t.me/" + botUsername + "?start=" + userId;
             
-            // ডাটা লোড করার আগে রেফার চেক
             checkReferral(); 
             loadFirebaseData();
             loadHistory();
         };
 
-        // ৪. রেফারেল কাউন্ট করার ফিক্সড ফাংশন
+        // ৪. উন্নত রেফার সিস্টেম (Secure Transactional Referral)
         function checkReferral() {
-            // টেলিগ্রাম বটের 'start' প্যারামিটার থেকে রেফারার আইডি নেওয়া
             const refBy = tele.initDataUnsafe?.start_param;
-            
-            // যদি রেফারেল আইডি থাকে এবং এটি নিজের না হয় এবং আগে কখনো রেফার না হয়ে থাকে
-            if (refBy && refBy !== userId && !localStorage.getItem('is_referred_already')) {
+            if (refBy && refBy !== userId) {
+                const referralRef = db.ref('referrals/' + userId);
                 
-                // প্রথমে চেক করা ইউজারটি ডাটাবেজে নতুন কি না
-                db.ref('users/' + userId).once('value', (snapshot) => {
-                    if (!snapshot.exists()) {
-                        // ইউজার নতুন হলে রেফারারকে ১টি রেফার যোগ করে দেওয়া
-                        db.ref('users/' + refBy + '/refers').transaction((current) => {
-                            return (current || 0) + 1;
-                        }).then(() => {
-                            // সফল হলে লোকাল স্টোরেজে মার্ক করা যাতে বারবার কাউন্ট না হয়
-                            localStorage.setItem('is_referred_already', 'true');
-                            console.log("Refer counted for: " + refBy);
-                        });
-                    }
+                referralRef.once('value').then((snapshot) => {
+                    if (snapshot.exists()) return; // Already referred
+
+                    db.ref('users/' + userId).once('value', (userSnap) => {
+                        if (!userSnap.exists()) {
+                            // First time user, link to referrer
+                            referralRef.set({ referredBy: refBy, time: Date.now() }).then(() => {
+                                // Add 1 refer count to the referrer
+                                db.ref('users/' + refBy + '/refers').transaction((current) => (current || 0) + 1);
+                                console.log("Refer counted successfully");
+                            });
+                        }
+                    });
                 });
             }
         }
@@ -253,8 +248,14 @@
             db.ref('users/' + userId).on('value', (snap) => {
                 if(snap.exists()) {
                     userData = snap.val();
+                    
+                    // Daily Ad Count Reset Logic
+                    const today = new Date().toLocaleDateString();
+                    if(userData.lastAdDate !== today) {
+                        db.ref('users/' + userId).update({ ads: 0, lastAdDate: today });
+                    }
                 } else {
-                    db.ref('users/' + userId).set(userData);
+                    db.ref('users/' + userId).set({ balance: 0, ads: 0, refers: 0, lastAdDate: new Date().toLocaleDateString() });
                 }
                 updateUI();
             });
@@ -280,6 +281,12 @@
         }
 
         function showAd() {
+            // Check Daily Limit (30 Ads)
+            if(userData.ads >= 30) {
+                alert("Daily limit reached! You can watch 30 ads per day.");
+                return;
+            }
+
             const btn = document.getElementById('adBtn');
             if (typeof show_10611708 === 'function') {
                 btn.disabled = true; btn.innerText = "Loading...";
@@ -290,16 +297,16 @@
                     btn.disabled = false; btn.innerText = "Watch";
                 });
             } else {
-                alert("অ্যাড সার্ভিস লোড হয়নি।");
+                alert("অ্যাড সার্ভিস লোড হয়নি।");
             }
         }
 
         function addTaka() {
             db.ref('users/' + userId).transaction((current) => {
-                if (!current) return { balance: 15, ads: 1, refers: 0 };
+                if (!current) return current;
                 return {
                     ...current,
-                    balance: (Number(current.balance) || 0) + 15,
+                    balance: (Number(current.balance) || 0) + 5, // Updated Reward: 5 Taka
                     ads: (Number(current.ads) || 0) + 1
                 };
             });
@@ -329,7 +336,7 @@
                 userId, method: selectedPayment, number: num, amount: amt, status: 'Pending', date: new Date().toLocaleDateString()
             }).then(() => {
                 db.ref('users/' + userId + '/balance').set(userData.balance - amt);
-                alert("রিকোয়েস্ট সফল হয়েছে!");
+                alert("রিকোয়েস্ট সফল হয়েছে!");
             });
         }
 
