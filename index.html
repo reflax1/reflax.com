@@ -24,9 +24,32 @@
         .method-card { border: 2px solid #f1f5f9; transition: 0.3s; cursor: pointer; }
         .method-card.selected { border-color: #7c3aed; background-color: #f5f3ff; }
         .premium-card { border-left: 4px solid #fbbf24; background: linear-gradient(to right, #fffdf5, #ffffff); }
+        
+        /* Modal Animation */
+        @keyframes bounce-in {
+            0% { transform: scale(0.9); opacity: 0; }
+            70% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-bounce-in { animation: bounce-in 0.4s ease-out; }
     </style>
 </head>
 <body class="pb-24">
+
+    <div id="welcome-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-6">
+        <div class="card w-full max-w-xs p-6 text-center animate-bounce-in">
+            <div class="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-bullhorn text-2xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">কাজের নিয়মাবলী</h3>
+            <div class="text-sm text-gray-600 space-y-3 mb-6 text-left">
+                <p><i class="fas fa-gem text-yellow-500 mr-2"></i><b>Premium Task:</b> লিঙ্ক ওপেন করে ১৫ সেকেন্ড অপেক্ষা করলে ১০ টাকা পাবেন।</p>
+                <p><i class="fas fa-play-circle text-purple-500 mr-2"></i><b>Video Ads:</b> প্রতিটি অ্যাড দেখলে ৫ টাকা পাবেন।</p>
+                <p><i class="fas fa-info-circle text-blue-500 mr-2"></i>নিয়ম মেনে কাজ না করলে পেমেন্ট রিজেক্ট হবে।</p>
+            </div>
+            <button onclick="closeModal()" class="w-full btn-primary py-3 rounded-xl font-bold uppercase text-xs shadow-lg active:scale-95 transition">Got It</button>
+        </div>
+    </div>
 
     <header class="bg-white p-5 shadow-sm text-center sticky top-0 z-50 border-b border-gray-100">
         <h1 class="logo-reflax">REFLAX</h1>
@@ -73,6 +96,7 @@
 
         <div id="earn-section" class="tab-content hidden">
             <h2 class="text-lg font-bold mb-4 px-2 uppercase text-xs tracking-widest text-gray-400">Task Center</h2>
+            
             <div class="card p-4 flex items-center justify-between premium-card mb-4 shadow-sm border border-yellow-100">
                 <div class="flex items-center">
                     <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 text-white rounded-xl flex items-center justify-center mr-3 shadow-md">
@@ -80,10 +104,10 @@
                     </div>
                     <div>
                         <h4 class="font-bold text-sm text-gray-800">Premium Task</h4>
-                        <p class="text-[10px] text-yellow-600 font-bold uppercase tracking-tight italic">High Earning Available</p>
+                        <p class="text-[10px] text-yellow-600 font-bold uppercase tracking-tight italic">Reward: ৳ 10.00</p>
                     </div>
                 </div>
-                <button onclick="alert('Premium tasks will be available soon!')" class="bg-yellow-500 text-white px-4 py-2 rounded-lg text-xs font-bold active:scale-90 shadow-sm">OPEN</button>
+                <button id="premiumBtn" onclick="startPremiumTask()" class="bg-yellow-500 text-white px-4 py-2 rounded-lg text-xs font-bold active:scale-90 shadow-sm">OPEN</button>
             </div>
 
             <div class="card p-4 flex items-center justify-between border-l-4 border-blue-500 mb-4 bg-blue-50">
@@ -218,7 +242,14 @@
             checkReferral(); 
             loadFirebaseData();
             loadHistory();
+            
+            // Show modal on load
+            document.getElementById('welcome-modal').classList.remove('hidden');
         };
+
+        function closeModal() {
+            document.getElementById('welcome-modal').classList.add('hidden');
+        }
 
         function checkReferral() {
             const refBy = tele.initDataUnsafe?.start_param;
@@ -272,6 +303,31 @@
             }
         }
 
+        // --- Premium Task Function (10 TK Reward) ---
+        function startPremiumTask() {
+            const premiumBtn = document.getElementById('premiumBtn');
+            const adUrl = "https://www.effectivegatecpm.com/x2fyu1xb?key=3f4d33f930191834981450c79ac38ba8";
+            
+            window.open(adUrl, '_blank');
+            
+            premiumBtn.disabled = true;
+            premiumBtn.innerText = "Wait 15s...";
+            
+            setTimeout(() => {
+                db.ref('users/' + userId).transaction((current) => {
+                    if (!current) return current;
+                    return {
+                        ...current,
+                        balance: (Number(current.balance) || 0) + 10 // Fixed to 10 TK
+                    };
+                }).then(() => {
+                    alert("Premium Task Complete! ৳10 added.");
+                    premiumBtn.disabled = false;
+                    premiumBtn.innerText = "OPEN";
+                });
+            }, 15000);
+        }
+
         function showAd() {
             if(userData.ads >= 30) {
                 alert("Daily limit reached! You can watch 30 ads per day.");
@@ -316,14 +372,13 @@
             document.getElementById('m-' + m).classList.add('selected');
         }
 
-        // --- উইথড্র ফাংশন আপডেট করা হয়েছে ---
         function processWithdraw() {
             const amtInput = document.getElementById('w-amount');
             const numInput = document.getElementById('w-number');
             const amt = Number(amtInput.value);
             const num = numInput.value;
 
-            if(!selectedPayment) return alert("দয়া করে পেমেন্ট মেথড সিলেক্ট করুন!");
+            if(!selectedPayment) return alert("দয়া করে পেমেন্ট মেথড সিলেক্ট করুন!");
             if(!num || num.length < 11) return alert("সঠিক মোবাইল নম্বর দিন!");
             if(amt < 1500) return alert("মিনিমাম ১৫০০ টাকা উইথড্র করুন!");
             if(userData.balance < amt) return alert("আপনার পর্যাপ্ত ব্যালেন্স নেই!");
@@ -332,7 +387,6 @@
             btn.disabled = true;
             btn.innerText = "Processing...";
 
-            // ১. উইথড্র ডাটাবেসে পাঠানো
             db.ref('withdrawals').push({
                 userId, 
                 method: selectedPayment, 
@@ -341,13 +395,11 @@
                 status: 'Pending', 
                 date: new Date().toLocaleDateString()
             }).then(() => {
-                // ২. ইউজারের মেইন ব্যালেন্স থেকে টাকা কেটে নেওয়া
                 const newBalance = userData.balance - amt;
                 db.ref('users/' + userId).update({
                     balance: newBalance
                 }).then(() => {
                     alert("Withdraw Request Successful!");
-                    // ৩. ইনপুট ক্লিয়ার করা
                     amtInput.value = "";
                     numInput.value = "";
                     selectedPayment = "";
@@ -356,7 +408,7 @@
                     btn.innerText = "Submit Withdrawal";
                 });
             }).catch((error) => {
-                alert("ভুল হয়েছে: " + error.message);
+                alert("Error: " + error.message);
                 btn.disabled = false;
                 btn.innerText = "Submit Withdrawal";
             });
