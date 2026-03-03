@@ -25,7 +25,6 @@
         .method-card.selected { border-color: #7c3aed; background-color: #f5f3ff; }
         .premium-card { border-left: 4px solid #fbbf24; background: linear-gradient(to right, #fffdf5, #ffffff); }
         
-        /* Modal Animation */
         @keyframes bounce-in {
             0% { transform: scale(0.9); opacity: 0; }
             70% { transform: scale(1.05); }
@@ -41,11 +40,11 @@
             <div class="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <i class="fas fa-bullhorn text-2xl"></i>
             </div>
-            <h3 class="text-lg font-bold text-gray-800 mb-2">কাজের নিয়মাবলী</h3>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">কাজের নিয়মাবলী</h3>
             <div class="text-sm text-gray-600 space-y-3 mb-6 text-left">
                 <p><i class="fas fa-gem text-yellow-500 mr-2"></i><b>Premium Task:</b> লিঙ্ক ওপেন করে ১৫ সেকেন্ড অপেক্ষা করলে ১০ টাকা পাবেন।</p>
                 <p><i class="fas fa-play-circle text-purple-500 mr-2"></i><b>Video Ads:</b> প্রতিটি অ্যাড দেখলে ৫ টাকা পাবেন।</p>
-                <p><i class="fas fa-info-circle text-blue-500 mr-2"></i>নিয়ম মেনে কাজ না করলে পেমেন্ট রিজেক্ট হবে।</p>
+                <p><i class="fas fa-info-circle text-blue-500 mr-2"></i>নিয়ম মেনে কাজ না করলে পেমেন্ট রিজেক্ট হবে।</p>
             </div>
             <button onclick="closeModal()" class="w-full btn-primary py-3 rounded-xl font-bold uppercase text-xs shadow-lg active:scale-95 transition">Got It</button>
         </div>
@@ -107,7 +106,7 @@
                         <p class="text-[10px] text-yellow-600 font-bold uppercase tracking-tight italic">Reward: ৳ 10.00</p>
                     </div>
                 </div>
-                <button id="premiumBtn" onclick="startPremiumTask()" class="bg-yellow-500 text-white px-4 py-2 rounded-lg text-xs font-bold active:scale-90 shadow-sm">OPEN</button>
+                <button id="premiumBtn" onclick="startPremiumTask()" class="bg-yellow-500 text-white px-4 py-2 rounded-lg text-xs font-bold active:scale-90 shadow-sm transition-all">OPEN</button>
             </div>
 
             <div class="card p-4 flex items-center justify-between border-l-4 border-blue-500 mb-4 bg-blue-50">
@@ -243,7 +242,6 @@
             loadFirebaseData();
             loadHistory();
             
-            // Show modal on load
             document.getElementById('welcome-modal').classList.remove('hidden');
         };
 
@@ -303,7 +301,7 @@
             }
         }
 
-        // --- Premium Task Function (10 TK Reward) ---
+        // --- Premium Task Function (Improved with Timer) ---
         function startPremiumTask() {
             const premiumBtn = document.getElementById('premiumBtn');
             const adUrl = "https://www.effectivegatecpm.com/x2fyu1xb?key=3f4d33f930191834981450c79ac38ba8";
@@ -311,21 +309,32 @@
             window.open(adUrl, '_blank');
             
             premiumBtn.disabled = true;
-            premiumBtn.innerText = "Wait 15s...";
+            let timeLeft = 15;
             
-            setTimeout(() => {
-                db.ref('users/' + userId).transaction((current) => {
-                    if (!current) return current;
-                    return {
-                        ...current,
-                        balance: (Number(current.balance) || 0) + 10 // Fixed to 10 TK
-                    };
-                }).then(() => {
-                    alert("Premium Task Complete! ৳10 added.");
-                    premiumBtn.disabled = false;
-                    premiumBtn.innerText = "OPEN";
-                });
-            }, 15000);
+            const timer = setInterval(() => {
+                premiumBtn.innerText = `Wait ${timeLeft}s`;
+                timeLeft--;
+                
+                if(timeLeft < 0) {
+                    clearInterval(timer);
+                    completePremiumTask();
+                }
+            }, 1000);
+        }
+
+        function completePremiumTask() {
+            const premiumBtn = document.getElementById('premiumBtn');
+            db.ref('users/' + userId).transaction((current) => {
+                if (!current) return current;
+                return {
+                    ...current,
+                    balance: (Number(current.balance) || 0) + 10
+                };
+            }).then(() => {
+                alert("Premium Task Complete! ৳10 added.");
+                premiumBtn.disabled = false;
+                premiumBtn.innerText = "OPEN";
+            });
         }
 
         function showAd() {
@@ -395,9 +404,11 @@
                 status: 'Pending', 
                 date: new Date().toLocaleDateString()
             }).then(() => {
-                const newBalance = userData.balance - amt;
-                db.ref('users/' + userId).update({
-                    balance: newBalance
+                db.ref('users/' + userId).transaction((current) => {
+                    if (current) {
+                        current.balance = (current.balance || 0) - amt;
+                    }
+                    return current;
                 }).then(() => {
                     alert("Withdraw Request Successful!");
                     amtInput.value = "";
@@ -407,10 +418,6 @@
                     btn.disabled = false;
                     btn.innerText = "Submit Withdrawal";
                 });
-            }).catch((error) => {
-                alert("Error: " + error.message);
-                btn.disabled = false;
-                btn.innerText = "Submit Withdrawal";
             });
         }
 
@@ -451,4 +458,4 @@
         }
     </script>
 </body>
-</html>
+                </html>
