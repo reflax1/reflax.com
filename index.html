@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REFLAX - Premium Earning</title>
+    <title>REFLAX - Ultimate Premium Earning</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,219 +11,240 @@
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
     <script src='https://libtl.com/sdk.js' data-zone='10611708' data-sdk='show_10611708'></script>
 
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f8fafc; }
-        .nav-active { color: #7c3aed !important; border-top: 3px solid #7c3aed; }
-        .hidden { display: none; }
-        .card { background: white; border-radius: 1.5rem; border: 1px solid #f1f5f9; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        .btn-primary { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; transition: 0.3s; }
-        .logo-reflax { background: linear-gradient(to right, #7c3aed, #db2777); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.875rem; font-weight: 900; font-style: italic; }
-        .method-card { border: 2px solid #f1f5f9; transition: 0.3s; cursor: pointer; }
-        .method-card.selected { border-color: #7c3aed; background-color: #f5f3ff; }
-        .premium-card { border-left: 4px solid #fbbf24; background: linear-gradient(to right, #fffdf5, #ffffff); }
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
         
-        @keyframes bounce-in {
-            0% { transform: scale(0.9); opacity: 0; }
-            70% { transform: scale(1.05); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .animate-bounce-in { animation: bounce-in 0.4s ease-out; }
+        body { font-family: 'Hind Siliguri', 'Segoe UI', sans-serif; background-color: #f1f5f9; }
+        .nav-active { color: #8b5cf6 !important; position: relative; }
+        .nav-active::after { content: ''; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 20px; height: 4px; background: #8b5cf6; border-radius: 0 0 10px 10px; }
+        .hidden { display: none; }
+        .card { background: white; border-radius: 1.25rem; transition: transform 0.2s; border: 1px solid rgba(0,0,0,0.05); }
+        .btn-primary { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: white; }
+        .logo-reflax { background: linear-gradient(to right, #6366f1, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; font-style: italic; }
+        .method-card { border: 2px solid transparent; background: #f8fafc; transition: 0.3s; cursor: pointer; }
+        .method-card.selected { border-color: #8b5cf6; background-color: #f5f3ff; transform: translateY(-2px); }
+        
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .premium-glow { animation: glow 2s infinite; }
+        @keyframes glow { 0% { box-shadow: 0 0 5px #f59e0b; } 50% { box-shadow: 0 0 15px #f59e0b; } 100% { box-shadow: 0 0 5px #f59e0b; } }
     </style>
 </head>
-<body class="pb-24">
+<body class="pb-24 select-none">
 
-    <div id="welcome-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-6">
-        <div class="card w-full max-w-xs p-6 text-center animate-bounce-in">
-            <div class="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-bullhorn text-2xl"></i>
+    <div id="welcome-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-6 hidden">
+        <div class="card w-full max-w-xs p-6 text-center scale-up shadow-2xl">
+            <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 rotate-3">
+                <i class="fas fa-rocket text-2xl"></i>
             </div>
-            <h3 class="text-lg font-bold text-gray-800 mb-2">কাজের নিয়মাবলী</h3>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">কাজের নিয়মাবলী</h3>
             <div class="text-sm text-gray-600 space-y-3 mb-6 text-left">
-                <p><i class="fas fa-gem text-yellow-500 mr-2"></i><b>Premium Task:</b> লিঙ্ক ওপেন করে ১৫ সেকেন্ড অপেক্ষা করলে ১০ টাকা পাবেন।</p>
-                <p><i class="fas fa-play-circle text-purple-500 mr-2"></i><b>Video Ads:</b> প্রতিটি অ্যাড দেখলে ৫ টাকা পাবেন।</p>
-                <p><i class="fas fa-info-circle text-blue-500 mr-2"></i>নিয়ম মেনে কাজ না করলে পেমেন্ট পাবেন না।</p>
+                <p class="flex items-start"><i class="fas fa-star text-yellow-500 mt-1 mr-2"></i> <span><b>Premium Task:</b> লিংক ভিজিট করে ১৫ সেকেন্ড ওয়েট করলে ১০ টাকা।</span></p>
+                <p class="flex items-start"><i class="fas fa-play-circle text-indigo-500 mt-1 mr-2"></i> <span><b>Video Ads:</b> প্রতি ভিডিওর জন্য ৫ টাকা বোনাস।</span></p>
+                <p class="flex items-start"><i class="fas fa-shield-alt text-green-500 mt-1 mr-2"></i> <span>সঠিক নিয়মে কাজ করলে পেমেন্ট ১০০% নিশ্চিত।</span></p>
             </div>
-            <button onclick="closeModal()" class="w-full btn-primary py-3 rounded-xl font-bold uppercase text-xs shadow-lg active:scale-95 transition">Got It</button>
+            <button onclick="closeModal()" class="w-full btn-primary py-3 rounded-xl font-bold shadow-lg active:scale-95 transition">বুঝতে পেরেছি</button>
         </div>
     </div>
 
-    <header class="bg-white p-5 shadow-sm text-center sticky top-0 z-50 border-b border-gray-100">
-        <h1 class="logo-reflax">REFLAX</h1>
-        <div class="h-1 w-10 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full mt-1"></div>
+    <header class="bg-white/80 backdrop-blur-md p-4 sticky top-0 z-50 border-b border-gray-100 flex justify-between items-center">
+        <h1 class="logo-reflax text-2xl">REFLAX</h1>
+        <div class="flex items-center gap-2 bg-indigo-50 px-3 py-1 rounded-full">
+            <i class="fas fa-user-circle text-indigo-500"></i>
+            <span id="header-user-id" class="text-[10px] font-bold text-indigo-700 uppercase">RF...</span>
+        </div>
     </header>
 
     <main class="max-w-md mx-auto p-4">
-        
-        <div class="mb-4 bg-indigo-600 rounded-2xl p-1 shadow-md flex items-center overflow-hidden">
-            <div class="bg-indigo-700 text-white px-3 py-1 rounded-xl text-[10px] font-black uppercase flex items-center gap-1 z-10">
-                <i class="fas fa-bell"></i> Notice
+        <div class="mb-5 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-0.5 shadow-lg overflow-hidden">
+            <div class="bg-white/10 flex items-center p-1">
+                <span class="bg-white text-indigo-600 px-2 py-0.5 rounded-lg text-[10px] font-black uppercase mr-2 shadow-sm">NEW</span>
+                <marquee class="text-white text-xs font-medium">
+                    আসসালামু আলাইকুম! REFLAX এ কাজ করে প্রতিদিন ১০০০-২০০০ টাকা আয় করুন। পেমেন্ট রিকোয়েস্ট দেওয়ার ২৪ ঘণ্টার মধ্যে টাকা পেয়ে যাবেন।
+                </marquee>
             </div>
-            <marquee class="text-white text-xs font-bold ml-2">
-                আসসালামু আলাইকুম, REFLAX এ আপনাকে স্বাগতম! নিয়ম মেনে কাজ করুন এবং প্রতিদিন আনলিমিটেড ইনকাম করুন। ধন্যবাদ।
-            </marquee>
         </div>
 
-        <div id="home-section" class="tab-content">
-            <div class="card p-6 mb-4 text-center">
-                <p class="text-gray-400 text-xs font-bold uppercase tracking-widest">Main Balance</p>
-                <h2 class="text-4xl font-black text-gray-800 mt-1">৳ <span id="balance-home">0.00</span></h2>
-                <div class="mt-5">
-                    <div class="flex justify-between text-[10px] font-bold text-gray-500 mb-1 uppercase">
-                        <span>Goal: ৳ 1500</span>
-                        <span id="percent-text">0%</span>
+        <div id="home-section" class="tab-content fade-in">
+            <div class="card p-8 mb-6 text-center shadow-xl bg-gradient-to-b from-white to-indigo-50/30">
+                <p class="text-gray-400 text-xs font-bold uppercase tracking-[0.2em] mb-1">Your Balance</p>
+                <div class="flex items-center justify-center gap-2">
+                    <span class="text-2xl font-bold text-indigo-600">৳</span>
+                    <h2 class="text-5xl font-black text-gray-800 tracking-tight" id="balance-home">0.00</h2>
+                </div>
+                
+                <div class="mt-8">
+                    <div class="flex justify-between text-[11px] font-bold text-gray-500 mb-2 uppercase">
+                        <span>Withdraw Goal: ৳1500</span>
+                        <span id="percent-text" class="text-indigo-600">0%</span>
                     </div>
-                    <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
-                        <div id="progress-bar" class="bg-gradient-to-r from-purple-500 to-pink-500 h-2.5 rounded-full transition-all duration-700" style="width: 0%"></div>
+                    <div class="w-full bg-gray-200 rounded-full h-3 p-0.5 shadow-inner">
+                        <div id="progress-bar" class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-2 rounded-full transition-all duration-1000 shadow-sm" style="width: 0%"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4 mb-4">
-                <div class="card p-4 text-center border-b-4 border-b-purple-500">
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="card p-4 flex flex-col items-center border-b-4 border-indigo-500">
+                    <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mb-2">
+                        <i class="fas fa-users text-indigo-600 text-sm"></i>
+                    </div>
                     <p class="text-[10px] text-gray-400 font-bold uppercase">Total Refer</p>
-                    <p class="font-bold text-lg text-purple-600" id="refer-count-home">0</p>
+                    <p class="font-black text-xl text-gray-800" id="refer-count-home">0</p>
                 </div>
-                <div class="card p-4 text-center border-b-4 border-b-pink-500">
-                    <p class="text-[10px] text-gray-400 font-bold uppercase">Ads Watched</p>
-                    <p class="font-bold text-lg text-pink-600"><span id="ads-count-home">0</span>/30</p>
+                <div class="card p-4 flex flex-col items-center border-b-4 border-pink-500">
+                    <div class="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center mb-2">
+                        <i class="fas fa-eye text-pink-600 text-sm"></i>
+                    </div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase">Ads View</p>
+                    <p class="font-black text-xl text-gray-800"><span id="ads-count-home">0</span>/30</p>
                 </div>
             </div>
 
-            <div class="card p-5 bg-gray-800 mb-4 text-white">
-                 <ul class="text-[11px] space-y-2 text-gray-300">
-                    <li><i class="fas fa-check-circle text-green-500 mr-1"></i> ১৫০০ টাকা হলেই উইথড্র দেওয়া যাবে।</li>
-                    <li><i class="fas fa-lock text-yellow-500 mr-1"></i> কমপক্ষে ১৬টি রেফার থাকতে হবে।</li>
-                    <li><i class="fas fa-check-circle text-green-500 mr-1"></i> Telegram ও YouTube সাবস্ক্রাইব মাস্ট।</li>
-                </ul>
-            </div>
-
-            <button onclick="switchTab('earn')" class="w-full btn-primary py-3 rounded-xl font-bold uppercase text-[10px] shadow-lg">Open Task Center</button>
+            <button onclick="switchTab('earn')" class="w-full btn-primary py-4 rounded-2xl font-bold uppercase tracking-widest shadow-xl hover:shadow-indigo-200 active:scale-[0.98] transition-all">
+                <i class="fas fa-rocket mr-2"></i> Start Earning
+            </button>
         </div>
 
-        <div id="earn-section" class="tab-content hidden">
-            <h2 class="text-lg font-bold mb-4 px-2 uppercase text-xs tracking-widest text-gray-400">Task Center</h2>
+        <div id="earn-section" class="tab-content hidden fade-in">
+            <h2 class="text-sm font-black mb-4 text-gray-500 uppercase tracking-widest flex items-center">
+                <span class="w-8 h-[2px] bg-indigo-500 mr-2"></span> Task Center
+            </h2>
             
-            <div class="card p-4 flex items-center justify-between premium-card mb-4 shadow-sm border border-yellow-100">
+            <div class="card p-4 flex items-center justify-between premium-glow mb-4 border border-yellow-200 bg-gradient-to-r from-white to-yellow-50/50">
                 <div class="flex items-center">
-                    <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 text-white rounded-xl flex items-center justify-center mr-3 shadow-md">
-                        <i class="fas fa-gem text-lg"></i>
+                    <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 text-white rounded-2xl flex items-center justify-center mr-4 shadow-lg shadow-yellow-100">
+                        <i class="fas fa-gem text-xl"></i>
                     </div>
                     <div>
-                        <h4 class="font-bold text-sm text-gray-800">Premium Task</h4>
-                        <p class="text-[10px] text-yellow-600 font-bold uppercase tracking-tight italic">Reward: ৳ 10.00</p>
+                        <h4 class="font-bold text-gray-800">Premium Task</h4>
+                        <p class="text-[11px] text-yellow-600 font-bold">Reward: ৳ 10.00</p>
                     </div>
                 </div>
-                <button id="premiumBtn" onclick="startPremiumTask()" class="bg-yellow-500 text-white px-4 py-2 rounded-lg text-xs font-bold active:scale-90 shadow-sm transition-all">OPEN</button>
+                <button id="premiumBtn" onclick="startPremiumTask()" class="bg-gray-900 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-black active:scale-90 transition shadow-lg">START</button>
             </div>
 
-            <div class="card p-4 flex items-center justify-between border-l-4 border-blue-500 mb-4 bg-blue-50">
+            <div class="card p-4 flex items-center justify-between mb-6 hover:border-indigo-200 transition">
                 <div class="flex items-center">
-                    <div class="w-10 h-10 bg-blue-500 text-white rounded-xl flex items-center justify-center mr-3 shadow-md">
-                        <i class="fab fa-telegram-plane text-lg"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-sm text-gray-800">Telegram Channel</h4>
-                        <p class="text-[10px] text-blue-600 font-bold uppercase tracking-tight italic">পেমেন্ট আপডেট পেতে জয়েন করুন</p>
-                    </div>
-                </div>
-                <a href="https://t.me/REFLAX_1" target="_blank" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold active:scale-90 shadow-sm">JOIN</a>
-            </div>
-
-            <div class="card p-4 flex items-center justify-between border-l-4 border-red-500 mb-4 bg-red-50">
-                <div class="flex items-center">
-                    <div class="w-10 h-10 bg-red-600 text-white rounded-xl flex items-center justify-center mr-3 shadow-md">
-                        <i class="fab fa-youtube text-lg"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-sm text-gray-800">YouTube Channel</h4>
-                        <p class="text-[10px] text-red-600 font-bold uppercase tracking-tight italic">সাবস্ক্রাইব করে স্ক্রিনশট রাখুন</p>
-                    </div>
-                </div>
-                <a href="https://www.youtube.com/@REFLAX-2" target="_blank" class="bg-red-600 text-white px-4 py-2 rounded-lg text-xs font-bold active:scale-90 shadow-sm">SUBSCRIBE</a>
-            </div>
-                 
-            <div class="card p-4 flex items-center justify-between border-l-4 border-purple-500 mb-4">
-                <div class="flex items-center">
-                    <div class="w-10 h-10 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mr-3">
+                    <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mr-4">
                         <i class="fas fa-play"></i>
                     </div>
                     <div>
-                        <h4 class="font-bold text-sm">Reward Video Ad</h4>
-                        <p class="text-[10px] text-gray-400 font-bold">Reward: ৳ 5.00</p>
+                        <h4 class="font-bold text-gray-800">Video Reward</h4>
+                        <p class="text-[11px] text-gray-400 font-bold uppercase">Daily Limit: 30</p>
                     </div>
                 </div>
-                <button id="adBtn" onclick="showAd()" class="bg-black text-white px-5 py-2 rounded-lg text-xs font-bold active:scale-90 transition">Watch</button>
+                <button id="adBtn" onclick="showAd()" class="bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold active:scale-90 shadow-md">WATCH</button>
+            </div>
+
+            <div class="space-y-3">
+                <a href="https://t.me/REFLAX_1" target="_blank" class="card p-4 flex items-center justify-between border-l-4 border-blue-500 bg-blue-50/20">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-blue-500 text-white rounded-xl flex items-center justify-center mr-4">
+                            <i class="fab fa-telegram-plane"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-800">Official Channel</h4>
+                            <p class="text-[10px] text-blue-500 font-bold uppercase tracking-tighter">Get Updates</p>
+                        </div>
+                    </div>
+                    <span class="bg-blue-600 text-white px-4 py-2 rounded-lg text-[10px] font-black shadow-sm">JOIN</span>
+                </a>
+
+                <a href="https://www.youtube.com/@REFLAX-2" target="_blank" class="card p-4 flex items-center justify-between border-l-4 border-red-500 bg-red-50/20">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-red-600 text-white rounded-xl flex items-center justify-center mr-4">
+                            <i class="fab fa-youtube"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-800">Official YouTube</h4>
+                            <p class="text-[10px] text-red-500 font-bold uppercase tracking-tighter">Subscribe Now</p>
+                        </div>
+                    </div>
+                    <span class="bg-red-600 text-white px-4 py-2 rounded-lg text-[10px] font-black shadow-sm">SUBSCRIBE</span>
+                </a>
             </div>
         </div>
 
-        <div id="withdraw-section" class="tab-content hidden">
-            <div id="withdraw-lock-msg" class="card p-8 text-center bg-gray-50 mb-4 border-2 border-dashed border-red-100">
-                <i class="fas fa-lock text-2xl text-red-400 mb-3"></i>
-                <h3 class="font-bold text-gray-800">উইথড্র লক করা</h3>
-                <p class="mt-2 text-purple-600 font-bold text-xs"><span id="lock-ref-count">0</span>/16 Refer Complete</p>
+        <div id="withdraw-section" class="tab-content hidden fade-in">
+            <div id="withdraw-lock-msg" class="card p-10 text-center bg-white border-2 border-dashed border-indigo-100 mb-4">
+                <div class="w-16 h-16 bg-red-50 text-red-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-lock text-2xl"></i>
+                </div>
+                <h3 class="font-bold text-gray-800">Withdraw Locked!</h3>
+                <p class="text-gray-500 text-xs mt-2">You need 16 referrals to unlock.<br>Currently: <span id="lock-ref-count" class="text-indigo-600 font-black">0</span>/16</p>
             </div>
 
-            <div id="withdraw-form" class="card p-5 space-y-4 opacity-30 pointer-events-none transition-all">
-                <h3 class="font-black text-gray-800 text-xs uppercase mb-2">Payment Method</h3>
-                <div class="grid grid-cols-3 gap-2">
-                    <div onclick="selectMethod('Bkash')" class="method-card p-2 rounded-xl text-center" id="m-Bkash">
+            <div id="withdraw-form" class="card p-6 space-y-5 opacity-40 pointer-events-none transition-all shadow-xl">
+                <h3 class="font-black text-gray-400 text-[10px] uppercase tracking-[0.2em]">Select Method</h3>
+                <div class="grid grid-cols-3 gap-3">
+                    <div onclick="selectMethod('Bkash')" class="method-card p-3 rounded-2xl text-center" id="m-Bkash">
                         <img src="https://seeklogo.com/images/B/bkash-logo-FBB258B90F-seeklogo.com.png" class="h-8 mx-auto mb-1">
-                        <span class="text-[10px] font-bold">Bkash</span>
+                        <span class="text-[9px] font-bold">Bkash</span>
                     </div>
-                    <div onclick="selectMethod('Nagad')" class="method-card p-2 rounded-xl text-center" id="m-Nagad">
+                    <div onclick="selectMethod('Nagad')" class="method-card p-3 rounded-2xl text-center" id="m-Nagad">
                         <img src="https://download.logo.wine/logo/Nagad/Nagad-Logo.wine.png" class="h-8 mx-auto mb-1">
-                        <span class="text-[10px] font-bold">Nagad</span>
+                        <span class="text-[9px] font-bold">Nagad</span>
                     </div>
-                    <div onclick="selectMethod('Rocket')" class="method-card p-2 rounded-xl text-center" id="m-Rocket">
+                    <div onclick="selectMethod('Rocket')" class="method-card p-3 rounded-2xl text-center" id="m-Rocket">
                         <img src="https://download.logo.wine/logo/Dutch-Bangla_Bank/Dutch-Bangla_Bank-Logo.wine.png" class="h-8 mx-auto mb-1">
-                        <span class="text-[10px] font-bold">Rocket</span>
+                        <span class="text-[9px] font-bold">Rocket</span>
                     </div>
                 </div>
-                <input type="number" id="w-number" placeholder="Mobile Number" class="w-full bg-gray-50 border p-3 rounded-xl text-sm font-bold outline-none">
-                <input type="number" id="w-amount" placeholder="Amount (Min 1500)" class="w-full bg-gray-50 border p-3 rounded-xl text-sm font-bold outline-none">
-                <button id="withdrawBtn" onclick="processWithdraw()" class="w-full btn-primary py-4 rounded-xl font-bold text-xs uppercase shadow-lg active:scale-95 transition-all">Submit Withdrawal</button>
+                <input type="number" id="w-number" placeholder="01XXX XXXXXX" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-xl text-sm font-bold focus:border-indigo-300 outline-none transition">
+                <input type="number" id="w-amount" placeholder="Minimum Amount 1500" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-xl text-sm font-bold focus:border-indigo-300 outline-none transition">
+                <button id="withdrawBtn" onclick="processWithdraw()" class="w-full btn-primary py-4 rounded-xl font-black text-xs uppercase shadow-lg shadow-indigo-100 active:scale-95 transition-all">Request Payment</button>
             </div>
         </div>
 
-        <div id="profile-section" class="tab-content hidden">
-            <div class="card p-6 text-center mb-4 bg-white shadow-md border-t-4 border-purple-600">
-                <h3 class="font-bold text-gray-800" id="display-user-id">RF0000</h3>
-                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Referral ID</p>
-                <div class="flex items-center bg-gray-50 border border-gray-100 p-2 rounded-2xl mt-4">
-                    <input type="text" id="refer-link" readonly value="Generating..." class="flex-1 bg-transparent p-1 text-[11px] font-bold text-purple-700 outline-none">
-                    <button onclick="copyRefer()" class="bg-purple-600 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold">COPY</button>
+        <div id="profile-section" class="tab-content hidden fade-in">
+            <div class="card p-6 text-center mb-6 bg-indigo-600 text-white shadow-xl relative overflow-hidden">
+                <div class="relative z-10">
+                    <div class="w-20 h-20 bg-white p-1 rounded-full mx-auto mb-3 shadow-lg ring-4 ring-indigo-500/30">
+                        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" class="w-full h-full rounded-full object-cover" alt="Bot Logo">
+                    </div>
+                    <h3 class="font-black text-lg mb-1" id="display-user-id">RF0000</h3>
+                    <p class="text-[10px] text-indigo-200 font-bold uppercase tracking-widest">Share & Earn Extra</p>
+                    <div class="flex items-center bg-white/10 backdrop-blur-md rounded-xl mt-4 p-2 border border-white/20">
+                        <input type="text" id="refer-link" readonly value="..." class="flex-1 bg-transparent px-2 text-[10px] font-bold text-white outline-none">
+                        <button onclick="copyRefer()" class="bg-white text-indigo-600 px-4 py-2 rounded-lg text-[10px] font-black uppercase shadow-sm">Copy</button>
+                    </div>
                 </div>
+                <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full"></div>
+                <div class="absolute -left-2 -top-2 w-12 h-12 bg-white/5 rounded-full"></div>
             </div>
 
-            <h3 class="font-bold text-xs text-gray-400 uppercase mb-3 px-2">Withdraw History</h3>
-            <div id="history-container" class="space-y-3 pb-5">
-                <p class="text-center text-gray-400 text-xs py-5">No history found</p>
-            </div>
+            <h3 class="font-black text-xs text-gray-400 uppercase mb-4 flex items-center px-2">
+                <i class="fas fa-history mr-2"></i> Payment History
+            </h3>
+            <div id="history-container" class="space-y-3 pb-5"></div>
         </div>
     </main>
 
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex justify-around p-3 z-50">
+    <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-gray-100 flex justify-around p-4 z-50">
         <button onclick="switchTab('home')" class="nav-btn flex flex-col items-center nav-active" id="home-nav">
-            <i class="fas fa-home text-lg"></i><span class="text-[10px] font-bold mt-1">Home</span>
+            <i class="fas fa-home text-xl"></i><span class="text-[10px] font-bold mt-1">Home</span>
         </button>
         <button onclick="switchTab('earn')" class="nav-btn flex flex-col items-center text-gray-400" id="earn-nav">
-            <i class="fas fa-coins text-lg"></i><span class="text-[10px] font-bold mt-1">Earn</span>
+            <i class="fas fa-bolt text-xl"></i><span class="text-[10px] font-bold mt-1">Earn</span>
         </button>
         <button onclick="switchTab('withdraw')" class="nav-btn flex flex-col items-center text-gray-400" id="withdraw-nav">
-            <i class="fas fa-wallet text-lg"></i><span class="text-[10px] font-bold mt-1">Withdraw</span>
+            <i class="fas fa-wallet text-xl"></i><span class="text-[10px] font-bold mt-1">Wallet</span>
         </button>
         <button onclick="switchTab('profile')" class="nav-btn flex flex-col items-center text-gray-400" id="profile-nav">
-            <i class="fas fa-history text-lg"></i><span class="text-[10px] font-bold mt-1">History</span>
+            <i class="fas fa-user text-xl"></i><span class="text-[10px] font-bold mt-1">Profile</span>
         </button>
     </nav>
 
     <script>
         const tele = window.Telegram.WebApp;
         tele.expand();
+        tele.enableClosingConfirmation();
 
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyBr-GNqWHhcFD19BSMk4ry2iZw1VkPP6lM",
             authDomain: "reflax-814b4.firebaseapp.com",
@@ -237,7 +258,7 @@
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
 
-        let userId = tele.initDataUnsafe?.user?.id?.toString() || localStorage.getItem('reflax_id') || ('RF' + Math.floor(1000 + Math.random() * 9999));
+        let userId = tele.initDataUnsafe?.user?.id?.toString() || localStorage.getItem('reflax_id') || ('RF' + Math.floor(1000 + Math.random() * 8999));
         localStorage.setItem('reflax_id', userId);
 
         let userData = { balance: 0, ads: 0, refers: 0, lastAdDate: "" };
@@ -245,85 +266,69 @@
 
         window.onload = function() {
             document.getElementById('display-user-id').innerText = "ID: " + userId;
+            document.getElementById('header-user-id').innerText = userId;
             let botUsername = "REFLAX1BOT"; 
+            // Correct refer link format for Telegram preview
             document.getElementById('refer-link').value = "https://t.me/" + botUsername + "?start=" + userId;
             
             checkReferral(); 
             loadFirebaseData();
             loadHistory();
             
-            document.getElementById('welcome-modal').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('welcome-modal').classList.remove('hidden');
+            }, 500);
         };
 
         function closeModal() {
             document.getElementById('welcome-modal').classList.add('hidden');
         }
 
-        function checkReferral() {
-            const refBy = tele.initDataUnsafe?.start_param;
-            if (refBy && refBy !== userId) {
-                const referralRef = db.ref('referrals/' + userId);
-                referralRef.once('value').then((snapshot) => {
-                    if (snapshot.exists()) return; 
-
-                    db.ref('users/' + userId).once('value', (userSnap) => {
-                        if (!userSnap.exists()) {
-                            referralRef.set({ referredBy: refBy, time: Date.now() }).then(() => {
-                                db.ref('users/' + refBy + '/refers').transaction((current) => (current || 0) + 1);
-                            });
-                        }
-                    });
-                });
-            }
-        }
-
         function loadFirebaseData() {
-            db.ref('users/' + userId).on('value', (snap) => {
+            const userRef = db.ref('users/' + userId);
+            userRef.on('value', (snap) => {
                 if(snap.exists()) {
                     userData = snap.val();
                     const today = new Date().toLocaleDateString();
                     if(userData.lastAdDate !== today) {
-                        db.ref('users/' + userId).update({ ads: 0, lastAdDate: today });
+                        userRef.update({ ads: 0, lastAdDate: today });
                     }
                 } else {
-                    db.ref('users/' + userId).set({ balance: 0, ads: 0, refers: 0, lastAdDate: new Date().toLocaleDateString() });
+                    userRef.set({ balance: 0, ads: 0, refers: 0, lastAdDate: new Date().toLocaleDateString() });
                 }
                 updateUI();
             });
         }
 
         function updateUI() {
-            document.getElementById('balance-home').innerText = (Number(userData.balance) || 0).toFixed(2);
+            const balanceEl = document.getElementById('balance-home');
+            const targetBalance = (Number(userData.balance) || 0);
+            balanceEl.innerText = targetBalance.toFixed(2);
+            
             document.getElementById('ads-count-home').innerText = userData.ads || 0;
             document.getElementById('refer-count-home').innerText = userData.refers || 0;
             document.getElementById('lock-ref-count').innerText = userData.refers || 0;
 
-            let progress = (userData.balance / 1500) * 100;
+            let progress = (targetBalance / 1500) * 100;
             document.getElementById('progress-bar').style.width = Math.min(progress, 100) + '%';
             document.getElementById('percent-text').innerText = Math.floor(Math.min(progress, 100)) + '%';
 
             if(userData.refers >= 16) {
                 document.getElementById('withdraw-lock-msg').classList.add('hidden');
-                document.getElementById('withdraw-form').classList.remove('opacity-30', 'pointer-events-none');
-            } else {
-                document.getElementById('withdraw-lock-msg').classList.remove('hidden');
-                document.getElementById('withdraw-form').classList.add('opacity-30', 'pointer-events-none');
+                document.getElementById('withdraw-form').classList.remove('opacity-40', 'pointer-events-none');
             }
         }
 
         function startPremiumTask() {
             const premiumBtn = document.getElementById('premiumBtn');
             const adUrl = "https://www.effectivegatecpm.com/x2fyu1xb?key=3f4d33f930191834981450c79ac38ba8";
-            
             window.open(adUrl, '_blank');
-            
             premiumBtn.disabled = true;
+            premiumBtn.classList.replace('bg-gray-900', 'bg-gray-400');
             let timeLeft = 15;
-            
             const timer = setInterval(() => {
-                premiumBtn.innerText = `Wait ${timeLeft}s`;
+                premiumBtn.innerText = `WAIT ${timeLeft}S`;
                 timeLeft--;
-                
                 if(timeLeft < 0) {
                     clearInterval(timer);
                     completePremiumTask();
@@ -333,46 +338,43 @@
 
         function completePremiumTask() {
             const premiumBtn = document.getElementById('premiumBtn');
-            db.ref('users/' + userId).transaction((current) => {
-                if (!current) return current;
-                return {
-                    ...current,
-                    balance: (Number(current.balance) || 0) + 10
-                };
-            }).then(() => {
-                alert("Premium Task Complete! ৳10 added.");
+            db.ref('users/' + userId + '/balance').transaction((current) => (current || 0) + 10)
+            .then(() => {
+                if(tele.showAlert) tele.showAlert("পেমেন্ট সফল! ১০ টাকা যোগ করা হয়েছে।");
+                else alert("Task Complete! ৳10 Added.");
                 premiumBtn.disabled = false;
-                premiumBtn.innerText = "OPEN";
+                premiumBtn.innerText = "START";
+                premiumBtn.classList.replace('bg-gray-400', 'bg-gray-900');
             });
         }
 
         function showAd() {
             if(userData.ads >= 30) {
-                alert("Daily limit reached! You can watch 30 ads per day.");
+                alert("আজকের লিমিট শেষ! আগামীকাল আবার চেষ্টা করুন।");
                 return;
             }
             const btn = document.getElementById('adBtn');
             if (typeof show_10611708 === 'function') {
-                btn.disabled = true; btn.innerText = "Loading...";
+                btn.disabled = true; btn.innerText = "LOADING...";
                 show_10611708().then(() => {
-                    addTaka(); btn.disabled = false; btn.innerText = "Watch";
+                    addReward(5); 
+                    btn.disabled = false; btn.innerText = "WATCH";
                 }).catch(() => {
-                    setTimeout(addTaka, 2000); 
-                    btn.disabled = false; btn.innerText = "Watch";
+                    setTimeout(() => addReward(5), 2000); 
+                    btn.disabled = false; btn.innerText = "WATCH";
                 });
             } else {
-                alert("অ্যাড সার্ভিস লোড হয়নি।");
+                alert("অ্যাড লোড হচ্ছে না, কিছুক্ষণ পর ট্রাই করুন।");
             }
         }
 
-        function addTaka() {
+        function addReward(amount) {
             db.ref('users/' + userId).transaction((current) => {
-                if (!current) return current;
-                return {
-                    ...current,
-                    balance: (Number(current.balance) || 0) + 5,
-                    ads: (Number(current.ads) || 0) + 1
-                };
+                if (current) {
+                    current.balance = (current.balance || 0) + amount;
+                    current.ads = (current.ads || 0) + 1;
+                }
+                return current;
             });
         }
 
@@ -391,42 +393,20 @@
         }
 
         function processWithdraw() {
-            const amtInput = document.getElementById('w-amount');
-            const numInput = document.getElementById('w-number');
-            const amt = Number(amtInput.value);
-            const num = numInput.value;
-
-            if(!selectedPayment) return alert("দয়া করে পেমেন্ট মেথড সিলেক্ট করুন!");
-            if(!num || num.length < 11) return alert("সঠিক মোবাইল নম্বর দিন!");
-            if(amt < 1500) return alert("মিনিমাম ১৫০০ টাকা উইথড্র করুন!");
-            if(userData.balance < amt) return alert("আপনার পর্যাপ্ত ব্যালেন্স নেই!");
-            
+            const amt = Number(document.getElementById('w-amount').value);
+            const num = document.getElementById('w-number').value;
+            if(!selectedPayment) return alert("পেমেন্ট মেথড সিলেক্ট করুন!");
+            if(num.length < 11) return alert("সঠিক মোবাইল নম্বর দিন!");
+            if(amt < 1500) return alert("সর্বনিম্ন উইথড্র ১৫০০ টাকা!");
+            if(userData.balance < amt) return alert("পর্যাপ্ত ব্যালেন্স নেই!");
             const btn = document.getElementById('withdrawBtn');
-            btn.disabled = true;
-            btn.innerText = "Processing...";
-
+            btn.disabled = true; btn.innerText = "SENDING...";
             db.ref('withdrawals').push({
-                userId, 
-                method: selectedPayment, 
-                number: num, 
-                amount: amt, 
-                status: 'Pending', 
-                date: new Date().toLocaleDateString()
+                userId, method: selectedPayment, number: num, amount: amt, status: 'Pending', date: new Date().toLocaleString()
             }).then(() => {
-                db.ref('users/' + userId).transaction((current) => {
-                    if (current) {
-                        current.balance = (current.balance || 0) - amt;
-                    }
-                    return current;
-                }).then(() => {
-                    alert("Withdraw Request Successful!");
-                    amtInput.value = "";
-                    numInput.value = "";
-                    selectedPayment = "";
-                    document.querySelectorAll('.method-card').forEach(el => el.classList.remove('selected'));
-                    btn.disabled = false;
-                    btn.innerText = "Submit Withdrawal";
-                });
+                db.ref('users/' + userId + '/balance').transaction(c => c - amt);
+                alert("উইথড্র রিকোয়েস্ট সফল হয়েছে!");
+                btn.disabled = false; btn.innerText = "Request Payment";
             });
         }
 
@@ -434,27 +414,23 @@
             db.ref('withdrawals').on('value', (snap) => {
                 const container = document.getElementById('history-container');
                 container.innerHTML = "";
-                let count = 0;
-                if(snap.exists()) {
-                    snap.forEach((child) => {
-                        const data = child.val();
-                        if(data.userId === userId) {
-                            count++;
-                            const statusColor = data.status === 'Paid' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600';
-                            const borderStatus = data.status === 'Paid' ? 'border-green-500' : 'border-orange-500';
-                            container.innerHTML += `
-                                <div class="card p-4 flex justify-between items-center border-l-4 ${borderStatus}">
-                                    <div>
-                                        <h4 class="font-bold text-sm text-gray-800">${data.method} - ৳${data.amount}</h4>
-                                        <p class="text-[10px] text-purple-600 font-bold">To: ${data.number}</p>
-                                        <p class="text-[9px] text-gray-400">${data.date}</p>
-                                    </div>
-                                    <span class="px-3 py-1 rounded-full text-[9px] font-black uppercase ${statusColor}">${data.status}</span>
-                                </div>`;
-                        }
-                    });
-                }
-                if(count === 0) container.innerHTML = '<p class="text-center text-gray-400 text-xs py-5">No history found</p>';
+                let hasData = false;
+                snap.forEach((child) => {
+                    const data = child.val();
+                    if(data.userId === userId) {
+                        hasData = true;
+                        const statusColor = data.status === 'Paid' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600';
+                        container.innerHTML += `
+                            <div class="card p-4 flex justify-between items-center fade-in">
+                                <div>
+                                    <h4 class="font-bold text-sm text-gray-800">${data.method} • ৳${data.amount}</h4>
+                                    <p class="text-[10px] text-gray-400">${data.date}</p>
+                                </div>
+                                <span class="px-3 py-1 rounded-lg text-[9px] font-black uppercase ${statusColor}">${data.status}</span>
+                            </div>`;
+                    }
+                });
+                if(!hasData) container.innerHTML = '<div class="text-center py-10 text-gray-400 text-xs">কোন ইতিহাস পাওয়া যায়নি</div>';
             });
         }
 
@@ -463,7 +439,23 @@
             copyText.select();
             navigator.clipboard.writeText(copyText.value);
             if(tele.showAlert) tele.showAlert("Refer Link Copied!");
-            else alert("Copied!");
+        }
+
+        function checkReferral() {
+            const refBy = tele.initDataUnsafe?.start_param;
+            if (refBy && refBy !== userId) {
+                db.ref('referrals/' + userId).once('value', (s) => {
+                    if (!s.exists()) {
+                        db.ref('users/' + userId).once('value', (u) => {
+                            if (!u.exists()) {
+                                db.ref('referrals/' + userId).set({ referredBy: refBy });
+                                db.ref('users/' + refBy + '/refers').transaction(c => (c || 0) + 1);
+                                db.ref('users/' + refBy + '/balance').transaction(c => (c || 0) + 5); 
+                            }
+                        });
+                    }
+                });
+            }
         }
     </script>
 </body>
