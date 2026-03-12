@@ -42,9 +42,9 @@
             </div>
             <h3 class="text-xl font-bold text-gray-800 mb-2">কাজের নিয়মাবলী</h3>
             <div class="text-sm text-gray-600 space-y-3 mb-6 text-left">
-                <p class="flex items-start"><i class="fas fa-star text-yellow-500 mt-1 mr-2"></i> <span><b>Premium Task:</b> লিংক ভিজিট করে ১৫ সেকেন্ড ওয়েট করলে ১০ টাকা।</span></p>
-                <p class="flex items-start"><i class="fas fa-play-circle text-indigo-500 mt-1 mr-2"></i> <span><b>Video Ads:</b> প্রতি ভিডিওর জন্য ৫ টাকা বোনাস।</span></p>
-                <p class="flex items-start"><i class="fas fa-shield-alt text-green-500 mt-1 mr-2"></i> <span>সঠিক নিয়মে কাজ করলে পেমেন্ট ১০০% নিশ্চিত।</span></p>
+                <p class="flex items-start"><i class="fas fa-star text-yellow-500 mt-1 mr-2"></i> <span><b>Premium Task:</b> ১৫ সেকেন্ড ওয়েট করলে ১০ টাকা।</span></p>
+                <p class="flex items-start"><i class="fas fa-play-circle text-indigo-500 mt-1 mr-2"></i> <span><b>Video Ads:</b> ৫ টাকা বোনাস।</span></p>
+                <p class="flex items-start"><i class="fas fa-shield-alt text-green-500 mt-1 mr-2"></i> <span>সঠিক নিয়মে কাজ করলে পেমেন্ট নিশ্চিত।</span></p>
             </div>
             <button onclick="closeModal()" class="w-full btn-primary py-3 rounded-xl font-bold shadow-lg active:scale-95 transition">বুঝতে পেরেছি</button>
         </div>
@@ -63,7 +63,7 @@
             <div class="bg-white/10 flex items-center p-1">
                 <span class="bg-white text-indigo-600 px-2 py-0.5 rounded-lg text-[10px] font-black uppercase mr-2 shadow-sm">NEW</span>
                 <marquee class="text-white text-xs font-medium">
-                    আসসালামু আলাইকুম! REFLAX এ কাজ করে প্রতিদিন ১০০০-২০০০ টাকা আয় করুন। পেমেন্ট রিকোয়েস্ট দেওয়ার ২৪ ঘণ্টার মধ্যে টাকা পেয়ে যাবেন।
+                    আসসালামু আলাইকুম! REFLAX এ কাজ করে প্রতিদিন আয় করুন। পেমেন্ট রিকোয়েস্ট দেওয়ার ২৪ ঘণ্টার মধ্যে টাকা পেয়ে যাবেন।
                 </marquee>
             </div>
         </div>
@@ -214,7 +214,6 @@
                     </div>
                 </div>
                 <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full"></div>
-                <div class="absolute -left-2 -top-2 w-12 h-12 bg-white/5 rounded-full"></div>
             </div>
 
             <h3 class="font-black text-xs text-gray-400 uppercase mb-4 flex items-center px-2">
@@ -242,7 +241,6 @@
     <script>
         const tele = window.Telegram.WebApp;
         tele.expand();
-        tele.enableClosingConfirmation();
 
         // Firebase Config
         const firebaseConfig = {
@@ -258,20 +256,22 @@
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
 
-        let userId = tele.initDataUnsafe?.user?.id?.toString() || localStorage.getItem('reflax_id') || ('RF' + Math.floor(1000 + Math.random() * 8999));
-        localStorage.setItem('reflax_id', userId);
+        let userId = tele.initDataUnsafe?.user?.id?.toString() || localStorage.getItem('reflax_id');
+        if(!userId) {
+            userId = 'RF' + Math.floor(100000 + Math.random() * 899999);
+            localStorage.setItem('reflax_id', userId);
+        }
 
         let userData = { balance: 0, ads: 0, refers: 0, lastAdDate: "" };
-        let selectedPayment = "";
 
         window.onload = function() {
             document.getElementById('display-user-id').innerText = "ID: " + userId;
             document.getElementById('header-user-id').innerText = userId;
-            let botUsername = "REFLAX1BOT"; 
-            // Correct refer link format for Telegram preview
-            document.getElementById('refer-link').value = "https://t.me/" + botUsername + "?start=" + userId;
             
-            checkReferral(); 
+            // --- UPDATED LINK FORMAT ---
+            let botUsername = "REFLAX1BOT"; 
+            document.getElementById('refer-link').value = "https://t.me/" + botUsername + "/app?startapp=" + userId;
+            
             loadFirebaseData();
             loadHistory();
             
@@ -293,23 +293,54 @@
                     if(userData.lastAdDate !== today) {
                         userRef.update({ ads: 0, lastAdDate: today });
                     }
+                    updateUI();
                 } else {
-                    userRef.set({ balance: 0, ads: 0, refers: 0, lastAdDate: new Date().toLocaleDateString() });
+                    // নতুন ইউজার হলে আগে রেফারেল চেক হবে, তারপর ডাটা তৈরি হবে
+                    checkReferralAndCreateUser();
                 }
-                updateUI();
             });
         }
 
+        // --- IMPROVED REFERRAL LOGIC ---
+        function checkReferralAndCreateUser() {
+            const refBy = tele.initDataUnsafe?.start_param; // Telegram Web App parameter
+            const userRef = db.ref('users/' + userId);
+
+            if (refBy && refBy !== userId) {
+                const parentRef = db.ref('users/' + refBy);
+                parentRef.once('value', (snap) => {
+                    if(snap.exists()){
+                        // অভিভাবক (Referrer) কে বোনাস দিন
+                        parentRef.child('refers').transaction(c => (c || 0) + 1);
+                        parentRef.child('balance').transaction(c => (c || 0) + 5);
+                    }
+                    // নতুন ইউজারের প্রোফাইল তৈরি করুন
+                    userRef.set({
+                        balance: 0,
+                        ads: 0,
+                        refers: 0,
+                        referredBy: refBy,
+                        lastAdDate: new Date().toLocaleDateString()
+                    });
+                });
+            } else {
+                // কোন রেফার ছাড়া জয়েন করলে
+                userRef.set({
+                    balance: 0,
+                    ads: 0,
+                    refers: 0,
+                    lastAdDate: new Date().toLocaleDateString()
+                });
+            }
+        }
+
         function updateUI() {
-            const balanceEl = document.getElementById('balance-home');
-            const targetBalance = (Number(userData.balance) || 0);
-            balanceEl.innerText = targetBalance.toFixed(2);
-            
+            document.getElementById('balance-home').innerText = (userData.balance || 0).toFixed(2);
             document.getElementById('ads-count-home').innerText = userData.ads || 0;
             document.getElementById('refer-count-home').innerText = userData.refers || 0;
             document.getElementById('lock-ref-count').innerText = userData.refers || 0;
 
-            let progress = (targetBalance / 1500) * 100;
+            let progress = (userData.balance / 1500) * 100;
             document.getElementById('progress-bar').style.width = Math.min(progress, 100) + '%';
             document.getElementById('percent-text').innerText = Math.floor(Math.min(progress, 100)) + '%';
 
@@ -320,70 +351,40 @@
         }
 
         function startPremiumTask() {
-            const premiumBtn = document.getElementById('premiumBtn');
             const adUrl = "https://www.effectivegatecpm.com/x2fyu1xb?key=3f4d33f930191834981450c79ac38ba8";
             window.open(adUrl, '_blank');
-            premiumBtn.disabled = true;
-            premiumBtn.classList.replace('bg-gray-900', 'bg-gray-400');
+            const btn = document.getElementById('premiumBtn');
+            btn.disabled = true;
             let timeLeft = 15;
             const timer = setInterval(() => {
-                premiumBtn.innerText = `WAIT ${timeLeft}S`;
+                btn.innerText = `WAIT ${timeLeft}S`;
                 timeLeft--;
                 if(timeLeft < 0) {
                     clearInterval(timer);
-                    completePremiumTask();
+                    db.ref('users/' + userId + '/balance').transaction(c => (c || 0) + 10);
+                    btn.disabled = false; btn.innerText = "START";
+                    alert("৳10 Added!");
                 }
             }, 1000);
         }
 
-        function completePremiumTask() {
-            const premiumBtn = document.getElementById('premiumBtn');
-            db.ref('users/' + userId + '/balance').transaction((current) => (current || 0) + 10)
-            .then(() => {
-                if(tele.showAlert) tele.showAlert("পেমেন্ট সফল! ১০ টাকা যোগ করা হয়েছে।");
-                else alert("Task Complete! ৳10 Added.");
-                premiumBtn.disabled = false;
-                premiumBtn.innerText = "START";
-                premiumBtn.classList.replace('bg-gray-400', 'bg-gray-900');
-            });
-        }
-
         function showAd() {
-            if(userData.ads >= 30) {
-                alert("আজকের লিমিট শেষ! আগামীকাল আবার চেষ্টা করুন।");
-                return;
-            }
-            const btn = document.getElementById('adBtn');
+            if(userData.ads >= 30) return alert("Daily Limit Over!");
             if (typeof show_10611708 === 'function') {
-                btn.disabled = true; btn.innerText = "LOADING...";
                 show_10611708().then(() => {
-                    addReward(5); 
-                    btn.disabled = false; btn.innerText = "WATCH";
-                }).catch(() => {
-                    setTimeout(() => addReward(5), 2000); 
-                    btn.disabled = false; btn.innerText = "WATCH";
+                    db.ref('users/' + userId).transaction(u => {
+                        if(u) { u.balance += 5; u.ads += 1; }
+                        return u;
+                    });
                 });
-            } else {
-                alert("অ্যাড লোড হচ্ছে না, কিছুক্ষণ পর ট্রাই করুন।");
             }
-        }
-
-        function addReward(amount) {
-            db.ref('users/' + userId).transaction((current) => {
-                if (current) {
-                    current.balance = (current.balance || 0) + amount;
-                    current.ads = (current.ads || 0) + 1;
-                }
-                return current;
-            });
         }
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(s => s.classList.add('hidden'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.replace('nav-active', 'text-gray-400'));
             document.getElementById(tabId + '-section').classList.remove('hidden');
-            document.getElementById(tabId + '-nav').classList.add('nav-active');
-            document.getElementById(tabId + '-nav').classList.remove('text-gray-400');
+            document.getElementById(tabId + '-nav').classList.replace('text-gray-400', 'nav-active');
         }
 
         function selectMethod(m) {
@@ -395,18 +396,14 @@
         function processWithdraw() {
             const amt = Number(document.getElementById('w-amount').value);
             const num = document.getElementById('w-number').value;
-            if(!selectedPayment) return alert("পেমেন্ট মেথড সিলেক্ট করুন!");
-            if(num.length < 11) return alert("সঠিক মোবাইল নম্বর দিন!");
-            if(amt < 1500) return alert("সর্বনিম্ন উইথড্র ১৫০০ টাকা!");
-            if(userData.balance < amt) return alert("পর্যাপ্ত ব্যালেন্স নেই!");
-            const btn = document.getElementById('withdrawBtn');
-            btn.disabled = true; btn.innerText = "SENDING...";
+            if(!selectedPayment || num.length < 11 || amt < 1500) return alert("Check Details!");
+            if(userData.balance < amt) return alert("Insufficient Balance!");
+            
             db.ref('withdrawals').push({
                 userId, method: selectedPayment, number: num, amount: amt, status: 'Pending', date: new Date().toLocaleString()
             }).then(() => {
                 db.ref('users/' + userId + '/balance').transaction(c => c - amt);
-                alert("উইথড্র রিকোয়েস্ট সফল হয়েছে!");
-                btn.disabled = false; btn.innerText = "Request Payment";
+                alert("Withdraw Request Sent!");
             });
         }
 
@@ -414,23 +411,16 @@
             db.ref('withdrawals').on('value', (snap) => {
                 const container = document.getElementById('history-container');
                 container.innerHTML = "";
-                let hasData = false;
                 snap.forEach((child) => {
                     const data = child.val();
                     if(data.userId === userId) {
-                        hasData = true;
-                        const statusColor = data.status === 'Paid' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600';
-                        container.innerHTML += `
-                            <div class="card p-4 flex justify-between items-center fade-in">
-                                <div>
-                                    <h4 class="font-bold text-sm text-gray-800">${data.method} • ৳${data.amount}</h4>
-                                    <p class="text-[10px] text-gray-400">${data.date}</p>
-                                </div>
-                                <span class="px-3 py-1 rounded-lg text-[9px] font-black uppercase ${statusColor}">${data.status}</span>
-                            </div>`;
+                        const color = data.status === 'Paid' ? 'text-green-600' : 'text-orange-600';
+                        container.innerHTML += `<div class="card p-4 flex justify-between items-center">
+                            <div><h4 class="font-bold text-sm">${data.method} • ৳${data.amount}</h4><p class="text-[10px] text-gray-400">${data.date}</p></div>
+                            <span class="text-[9px] font-black ${color}">${data.status}</span>
+                        </div>`;
                     }
                 });
-                if(!hasData) container.innerHTML = '<div class="text-center py-10 text-gray-400 text-xs">কোন ইতিহাস পাওয়া যায়নি</div>';
             });
         }
 
@@ -438,24 +428,7 @@
             const copyText = document.getElementById("refer-link");
             copyText.select();
             navigator.clipboard.writeText(copyText.value);
-            if(tele.showAlert) tele.showAlert("Refer Link Copied!");
-        }
-
-        function checkReferral() {
-            const refBy = tele.initDataUnsafe?.start_param;
-            if (refBy && refBy !== userId) {
-                db.ref('referrals/' + userId).once('value', (s) => {
-                    if (!s.exists()) {
-                        db.ref('users/' + userId).once('value', (u) => {
-                            if (!u.exists()) {
-                                db.ref('referrals/' + userId).set({ referredBy: refBy });
-                                db.ref('users/' + refBy + '/refers').transaction(c => (c || 0) + 1);
-                                db.ref('users/' + refBy + '/balance').transaction(c => (c || 0) + 5); 
-                            }
-                        });
-                    }
-                });
-            }
+            alert("Refer Link Copied!");
         }
     </script>
 </body>
